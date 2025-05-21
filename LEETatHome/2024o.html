@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>2024 LEET 기출 집릿 OMR</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #FFF7C7;
+    }
+    #tabs {
+      display: flex;
+      background: #eee;
+      padding: 10px;
+    }
+    #tabs button {
+      margin-right: 10px;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 1.0em;
+    }
+    .tab-content {
+      display: none;
+      padding: 20px;
+    }
+    .active {
+      display: block;
+    }
+    .omr-grid {
+      display: flex;
+      gap: 50px;
+      flex-wrap: wrap;
+    }
+    .omr-column {
+      border: 2px solid #307293;
+      background-color: #FFF7C7;
+      padding: 10px;
+      color: #307293;
+    }
+    table.omr-table {
+      border-collapse: collapse;
+    }
+    table.omr-table td {
+      padding: 6px 4px;
+    }
+    .omr-number-cell {
+      width: 40px;
+      text-align: center;
+      background-color: #F9F6CB;
+      border-right: 1px solid #307293;
+      padding-right: 8px;
+      font-weight: bold;
+    }
+    .omr-option {
+      display: inline-block;
+      width: 14px;
+      height: 21px;
+      line-height: 21px;
+      text-align: center;
+      border: 2px solid #307293;
+      border-radius: 50%;
+      margin-left: 18px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 12px;
+      color: #307293;
+      background-color: #FFF7C7;
+    }
+    .omr-option.selected {
+      background: #000;
+      color: #000;
+      border-color: #000;
+    }
+    .omr-option.answer {
+      color: red !important;
+      border-color: red !important;
+    }
+    .timer {
+      font-weight: bold;
+      font-size: 1.2em;
+      margin-left: 10px;
+      color: #307293;
+    }
+  </style>
+</head>
+<body>
+
+<div id="tabs">
+  <button onclick="showTab('lang')">언어이해</button>
+  <button onclick="showTab('break')">휴식</button>
+  <button onclick="showTab('logic')">추리논증</button>
+  <button onclick="showTab('result')">성적표</button>
+  <div style="font-size: 0.8em">© 2025 PoC (pillarofcode@gmail.com)</div>
+</div>
+
+<div id="lang" class="tab-content active">
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <h2 style="color:#307293; font-size: 1.4em;">2024 LEET 기출 언어이해(홀수형)</h2>
+    <button id="show-answer-lang" onclick="showAnswer('lang')" data-showing="false" style="display:none;">정답 보기</button>
+    <button class="start-button" onclick="startTimer('lang', 70 * 60)">시작</button>
+    <button id="finish-lang" onclick="finishLang()" style="display:none;">종료</button>
+    <button id="next-lang" onclick="showTab('break')" style="display:none;">다음</button>
+    <div class="timer" id="timer-lang">70:00</div>
+  </div>
+  <div class="omr-grid">
+    <div class="omr-column"><table class="omr-table" id="lang-questions-1"></table></div>
+    <div class="omr-column"><table class="omr-table" id="lang-questions-2"></table></div>
+  </div>
+  <h3 style="color:#307293;" id='notice-start'>* 시작 버튼을 눌러야 마킹이 가능해집니다.</h3>
+</div>
+
+<div id="break" class="tab-content">
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <h2 style="color:#307293; font-size: 1.4em;">휴식 시간</h2>
+    <button class="start-button" onclick="startTimer('break', 35 * 60)">시작</button>
+    <button id="finish-break" onclick="finishBreak()" style="display:none;">종료</button>
+    <button id="next-break" onclick="showTab('logic')" style="display:none;">다음</button>
+    <div class="timer" id="timer-break">35:00</div>
+  </div>
+</div>
+
+<div id="logic" class="tab-content">
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <h2 style="color:#307293; font-size: 1.4em;">2024 LEET 기출 추리논증(홀수형)</h2>
+    <button id="show-answer-logic" onclick="showAnswer('logic')" data-showing="false" style="display:none;">정답 보기</button>
+    <button class="start-button" onclick="startTimer('logic', 125 * 60)">시작</button>
+    <button id="finish-logic" onclick="finishLogic()" style="display:none;">종료</button>
+    <button id="next-logic" onclick="showTab('result')" style="display:none;">다음</button>
+    <div class="timer" id="timer-logic">125:00</div>
+  </div>
+  <div class="omr-grid">
+    <div class="omr-column"><table class="omr-table" id="logic-questions-1"></table></div>
+    <div class="omr-column"><table class="omr-table" id="logic-questions-2"></table></div>
+  </div>
+</div>
+
+<div id="result" class="tab-content">
+  <h2 style="color:#307293;">2024 기출 집릿 성적표</h2>
+  <table border="1" cellpadding="8" id="score-table">
+  <thead>
+    <tr>
+      <th>영역</th>
+      <th>정답 수</th>
+      <th>표준점수</th>
+      <th>백분위</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>언어이해</td>
+      <td id="lang-correct">-</td>
+      <td id="lang-std">-</td>
+      <td id="lang-perc">-</td>
+    </tr>
+    <tr>
+      <td>추리논증</td>
+      <td id="logic-correct">-</td>
+      <td id="logic-std">-</td>
+      <td id="logic-perc">-</td>
+    </tr>
+    <tr>
+      <td><strong>합계</strong></td>
+      <td id="total-correct"><strong>-</strong></td>
+      <td id="total-std">-</td>
+      <td id="total-perc">-</td>
+    </tr>
+  </tbody>
+</table>
+  *실제와 약간 다를 수 있습니다.<br/>
+  <div style="font-size: 0.5em">v2024o-250521</div>
+</div>
+
+<script>
+
+const langAnswers = {
+  1:3,2:4,3:3,4:2,5:5,6:3,7:5,8:2,9:5,10:4,
+  11:1,12:3,13:1,14:4,15:3,16:3,17:2,18:1,19:5,20:4,
+  21:1,22:4,23:2,24:2,25:5,26:4,27:1,28:2,29:2,30:4
+};
+const logicAnswers = {
+  1:4,2:3,3:2,4:3,5:3,6:3,7:5,8:3,9:4,10:4,
+  11:3,12:2,13:1,14:1,15:5,16:3,17:2,18:5,19:5,20:1,
+  21:2,22:2,23:1,24:1,25:4,26:4,27:2,28:3,29:5,30:1,
+  31:1,32:5,33:5,34:4,35:1,36:2,37:4,38:3,39:5,40:3
+};
+
+const langScoreMap = {
+  30: {std: '80.9', perc: '100.0'},
+  29: {std: '78.4', perc: '100.0'},
+  28: {std: '76.0', perc: '100.0'},
+  27: {std: '73.6', perc: '100.0'},
+  26: {std: '71.1', perc: '99.9'},
+  25: {std: '68.7', perc: '99.7'},
+  24: {std: '66.3', perc: '99.4'},
+  23: {std: '63.8', perc: '98.6'},
+  22: {std: '61.4', perc: '97.1'},
+  21: {std: '59.0', perc: '94.5'},
+  20: {std: '56.5', perc: '90.3'},
+  19: {std: '54.1', perc: '84.3'},
+  18: {std: '51.7', perc: '76.1'},
+  17: {std: '49.3', perc: '66.0'},
+  16: {std: '46.8', perc: '54.7'},
+  15: {std: '44.4', perc: '42.9'},
+  14: {std: '42.0', perc: '31.7'},
+  13: {std: '39.5', perc: '22.0'},
+  12: {std: '37.1', perc: '14.3'},
+  11: {std: '34.7', perc: '8.6'},
+  10: {std: '32.2', perc: '4.8'},
+   9: {std: '29.8', perc: '2.5'},
+   8: {std: '27.4', perc: '1.2'},
+   7: {std: '24.9', perc: '0.5'},
+   6: {std: '22.5', perc: '0.2'},
+   5: {std: '20.1', perc: '0.1'},
+   4: {std: '17.7', perc: '0.0'},
+   3: {std: '15.3', perc: '0.0'},
+   2: {std: '12.9', perc: '0.0'},
+   1: {std: '10.5', perc: '0.0'},
+   0: {std: '8.1', perc: '0.0'}
+};
+
+const logicScoreMap = {
+  40: {std: '97.5', perc: '100'},
+  39: {std: '95.4', perc: '100'},
+  38: {std: '93.3', perc: '99.9'},
+  37: {std: '91.2', perc: '99.9'},
+  36: {std: '89.1', perc: '99.8'},
+  35: {std: '86.9', perc: '99.3'},
+  34: {std: '84.8', perc: '99.1'},
+  33: {std: '82.7', perc: '98.3'},
+  32: {std: '80.6', perc: '96.9'},
+  31: {std: '78.5', perc: '94.9'},
+  30: {std: '76.4', perc: '92.5'},
+  29: {std: '74.3', perc: '88.7'},
+  28: {std: '72.2', perc: '84.9'},
+  27: {std: '70.1', perc: '79.6'},
+  26: {std: '68.0', perc: '73.3'},
+  25: {std: '65.9', perc: '66.6'},
+  24: {std: '63.8', perc: '58.7'},
+  23: {std: '61.7', perc: '50.7'},
+  22: {std: '59.6', perc: '42.7'},
+  21: {std: '57.5', perc: '34.9'},
+  20: {std: '55.4', perc: '27.8'},
+  19: {std: '53.3', perc: '21.4'},
+  18: {std: '51.2', perc: '16'},
+  17: {std: '49.1', perc: '11.6'},
+  16: {std: '46.9', perc: '8.1'},
+  15: {std: '44.8', perc: '5.4'},
+  14: {std: '42.8', perc: '3.5'},
+  13: {std: '40.9', perc: '2.2'},
+  12: {std: '39.1', perc: '1.4'},
+  11: {std: '37.5', perc: '0.8'},
+  10: {std: '36.0', perc: '0.4'},
+   9: {std: '34.6', perc: '0.2'},
+   8: {std: '33.4', perc: '0.1'},
+   7: {std: '32.3', perc: '0.1'},
+   6: {std: '31.3', perc: '0.0'},
+   5: {std: '30.6', perc: '0.0'},
+   4: {std: '30.0', perc: '0.0'},
+   3: {std: '29.6', perc: '0.0'},
+   2: {std: '29.4', perc: '0.0'},
+   1: {std: '29.3', perc: '0.0'},
+   0: {std: '29.2', perc: '0.0'}
+};
+  
+const timerStates = {};
+const timerIntervals = {};
+const timerButtons = {};
+const tabLocked = {};
+const tabActive = { lang: false, logic: false };
+
+function startTimer(section, duration) {
+  document.getElementById('notice-start').style.display = 'none';
+  if (section === 'break') document.getElementById('finish-break').style.display = 'inline-block';
+  const startButton = document.querySelector(`#${section} .start-button`);
+  const display = document.getElementById(`timer-${section}`);
+  const button = document.querySelector(`#${section} .start-button`);
+  timerButtons[section] = button;
+
+  if (!timerIntervals[section]) {
+    if (!timerStates[section]) {
+      timerStates[section] = duration-1;
+    }
+
+    timerIntervals[section] = setInterval(() => {
+      const minutes = String(Math.floor(timerStates[section] / 60)).padStart(2, '0');
+      const seconds = String(timerStates[section] % 60).padStart(2, '0');
+      display.textContent = `${minutes}:${seconds}`;
+      if (--timerStates[section] <= 0) {
+        clearInterval(timerIntervals[section]);
+        tabLocked[section] = true;
+        display.textContent = "00:00";
+        if (section === 'lang') finishLang()
+        else if (section === 'break') finishBreak()
+        else if (section === 'logic') finishLogic()      
+      }
+    }, 1000);
+    startButton.textContent = '일시정지';
+    if (section === 'lang' || section === 'logic') {
+      tabActive[section] = true;
+      if (section === 'lang') document.getElementById('finish-lang').style.display = 'inline-block';
+      if (section === 'logic') document.getElementById('finish-logic').style.display = 'inline-block';
+    }
+  } else {
+    clearInterval(timerIntervals[section]);
+    timerIntervals[section] = null;
+    startButton.textContent = '시작';
+  }
+}
+
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  calculateScore();
+}
+
+function createQuestions(tableId1, tableId2, count, prefix) {
+  const table1 = document.getElementById(tableId1);
+  const table2 = document.getElementById(tableId2);
+  for (let i = 1; i <= count; i++) {
+    const row = document.createElement('tr');
+    if (i % 5 === 0) row.style.borderBottom = '1px solid #307293';
+    const numberCell = document.createElement('td');
+    numberCell.className = 'omr-number-cell';
+    numberCell.textContent = `${i}`;
+    const optionCell = document.createElement('td');
+    for (let j = 1; j <= 5; j++) {
+      const opt = document.createElement('span');
+      opt.className = 'omr-option';
+      opt.textContent = j;
+      opt.dataset.q = `${prefix}${i}`;
+      opt.dataset.val = j;
+      opt.onclick = function () { selectOption(this); };
+      optionCell.appendChild(opt);
+    }
+    row.appendChild(numberCell);
+    row.appendChild(optionCell);
+    (i <= count / 2 ? table1 : table2).appendChild(row);
+  }
+}
+
+function selectOption(el) {
+  const question = el.getAttribute('data-q');
+  const section = question.startsWith('L') ? 'lang' : question.startsWith('R') ? 'logic' : null;
+  if (section && (!tabActive[section] || tabLocked[section])) return;
+
+  const siblings = document.querySelectorAll(`.omr-option[data-q='${question}']`);
+  siblings.forEach(sib => sib.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function finishLang() {
+  document.getElementById('finish-lang').style.display = 'none';
+  document.getElementById('next-lang').style.display = 'inline-block';
+  document.getElementById('show-answer-lang').style.display = 'inline-block';
+  timerStates['lang'] = 0;
+  clearInterval(timerIntervals['lang']);
+  tabLocked['lang'] = true;
+  const display = document.getElementById('timer-lang');
+  display.textContent = '00:00';
+  const button = timerButtons['lang'];
+  if (button) {
+    button.textContent = '초기화';
+    button.onclick = () => resetOMR('lang');
+  }
+  showDialog('언어이해가 종료되었습니다.', () => showTab('break'));
+}
+function finishLogic() {
+  document.getElementById('finish-logic').style.display = 'none';
+  document.getElementById('next-logic').style.display = 'inline-block';
+  document.getElementById('show-answer-logic').style.display = 'inline-block';
+  timerStates['logic'] = 0;
+  clearInterval(timerIntervals['logic']);
+  tabLocked['logic'] = true;
+  const display = document.getElementById('timer-logic');
+  display.textContent = '00:00';
+  const button = timerButtons['logic'];
+  if (button) {
+    button.textContent = '초기화';
+    button.onclick = () => resetOMR('logic');
+  }
+  showDialog('추리논증이 종료되었습니다.', () => {
+    showTab('result');
+    calculateScore();
+  });
+}
+function calculateScore() {
+  let langCorrect = 0;
+  let logicCorrect = 0;
+  for (let i = 1; i <= 30; i++) {
+    const selected = document.querySelector(`.omr-option.selected[data-q='L${i}']`);
+    if (selected && Number(selected.dataset.val) === langAnswers[i]) langCorrect++;
+  }
+  for (let i = 1; i <= 40; i++) {
+    const selected = document.querySelector(`.omr-option.selected[data-q='R${i}']`);
+    if (selected && Number(selected.dataset.val) === logicAnswers[i]) logicCorrect++;
+  }
+
+  document.getElementById("lang-correct").textContent = langCorrect;
+  document.getElementById("logic-correct").textContent = logicCorrect;
+  document.getElementById("total-correct").textContent = langCorrect + logicCorrect;
+
+  const langStd = parseFloat(langScoreMap[langCorrect]?.std || 0);
+  const logicStd = parseFloat(logicScoreMap[logicCorrect]?.std || 0);
+  const langPerc = parseFloat(langScoreMap[langCorrect]?.perc || 0);
+  const logicPerc = parseFloat(logicScoreMap[logicCorrect]?.perc || 0);
+
+  const totalStd = (langStd + logicStd).toFixed(1);
+  const totalPerc = (langPerc + logicPerc).toFixed(1);
+
+  document.getElementById("total-std").textContent = totalStd;
+  document.getElementById("total-perc").textContent = totalPerc;
+
+  document.getElementById("lang-std").textContent = langScoreMap[langCorrect]?.std || '-';
+  document.getElementById("lang-perc").textContent = langScoreMap[langCorrect]?.perc || '-';
+
+  document.getElementById("logic-std").textContent = logicScoreMap[logicCorrect]?.std || '-';
+  document.getElementById("logic-perc").textContent = logicScoreMap[logicCorrect]?.perc || '-';
+}
+
+
+createQuestions("lang-questions-1", "lang-questions-2", 30, "L");
+createQuestions("logic-questions-1", "logic-questions-2", 40, "R");
+function resetOMR(section) {
+  showConfirmDialog('정말 초기화할까요?', () => {
+    if (section === 'lang') {
+      document.getElementById('finish-lang').style.display = 'none';
+      document.getElementById('next-lang').style.display = 'none';
+      document.getElementById('show-answer-lang').style.display = 'none';
+      hideAnswer(section)
+    } else if (section === 'logic') {
+      document.getElementById('finish-logic').style.display = 'none';
+      document.getElementById('next-logic').style.display = 'none';
+      document.getElementById('show-answer-logic').style.display = 'none';
+      hideAnswer(section)
+    } else if (section === 'break') {
+      document.getElementById('finish-break').style.display = 'none';
+      document.getElementById('next-break').style.display = 'none';
+    }
+    
+    tabLocked[section] = false;
+    tabActive[section] = false;
+    timerStates[section] = null;
+    timerIntervals[section] = null;
+    const display = document.getElementById(`timer-${section}`);
+    display.textContent = section === 'lang' ? '70:00' : section === 'logic' ? '125:00' : section === 'break' ? '35:00' : '00:00';
+    const button = timerButtons[section];
+    if (button) {
+      button.textContent = '시작';
+      button.onclick = () => startTimer(section, section === 'lang' ? 70*60 : section === 'logic' ? 125*60 : 35*60);
+    }
+    const prefix = section === 'lang' ? 'L' : 'R';
+    const count = section === 'lang' ? 30 : 40;
+    for (let i = 1; i <= count; i++) {
+      const options = document.querySelectorAll(`.omr-option[data-q='${prefix}${i}']`);
+      options.forEach(opt => opt.classList.remove('selected'));
+    }
+  });
+}
+
+function finishBreak() {
+  document.getElementById('finish-break').style.display = 'none';
+  document.getElementById('next-break').style.display = 'inline-block';
+  timerStates['break'] = 0;
+  clearInterval(timerIntervals['break']);
+  tabLocked['break'] = true;
+  const display = document.getElementById('timer-break');
+  display.textContent = '00:00';
+  const button = timerButtons['break'];
+  if (button) {
+    button.textContent = '초기화';
+    button.onclick = () => resetOMR('break');
+  }
+  showDialog('휴식 시간이 종료되었습니다.', () => showTab('logic'));
+}
+
+function showConfirmDialog(message, onConfirm) {
+  const dialog = document.getElementById("dialog-overlay");
+  const nextBtn = document.getElementById("dialog-next-button");
+  document.getElementById("dialog-message").textContent = message;
+  dialog.style.display = "flex";
+  nextBtn.textContent = "확인";
+  nextBtn.onclick = () => {
+    closeDialog();
+    if (onConfirm) onConfirm();
+  };
+}
+
+function showAnswer(section) {
+  const btn = document.getElementById(`show-answer-${section}`);
+  const isShowing = btn.dataset.showing === 'true';
+  const answers = section === 'lang' ? langAnswers : logicAnswers;
+  const prefix = section === 'lang' ? 'L' : 'R';
+  const count = section === 'lang' ? 30 : 40;
+
+  for (let i = 1; i <= count; i++) {
+    const correct = answers[i];
+    const opt = document.querySelector(`.omr-option[data-q='${prefix}${i}'][data-val='${correct}']`);
+    if (opt) {
+      if (isShowing) {
+        opt.classList.remove('answer');
+      } else {
+        opt.classList.add('answer');
+      }
+    }
+  }
+
+  // 버튼 텍스트 및 상태 전환
+  btn.textContent = isShowing ? '정답 보기' : '정답 숨기기';
+  btn.dataset.showing = isShowing ? 'false' : 'true';
+}
+
+function hideAnswer(section) {
+  const btn = document.getElementById(`show-answer-${section}`);
+  const isShowing = btn.dataset.showing === 'true';
+  const answers = section === 'lang' ? langAnswers : logicAnswers;
+  const prefix = section === 'lang' ? 'L' : 'R';
+  const count = section === 'lang' ? 30 : 40;
+
+  if (!isShowing) return;
+
+  for (let i = 1; i <= count; i++) {
+    const correct = answers[i];
+    const opt = document.querySelector(`.omr-option[data-q='${prefix}${i}'][data-val='${correct}']`);
+    if (opt) {
+      if (isShowing) {
+        opt.classList.remove('answer');
+      } else {
+        opt.classList.add('answer');
+      }
+    }
+  }
+
+  // 버튼 텍스트 및 상태 전환
+  btn.textContent = isShowing ? '정답 보기' : '정답 숨기기';
+  btn.dataset.showing = isShowing ? 'false' : 'true';
+}
+
+  
+</script>
+<div id="dialog-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+  <div style="background:white; padding:20px; border:2px solid #307293; text-align:center; min-width: 200px;
+            position: absolute; top: 200px; left: 180px; transform: none; margin: 0;">
+    <p id="dialog-message">종료되었습니다.</p>
+    <button onclick="closeDialog()">닫기</button>
+    <button id="dialog-next-button">다음으로</button>
+  </div>
+</div>
+
+<script>
+function showDialog(message, onNext) {
+  document.getElementById("dialog-message").textContent = message;
+  document.getElementById("dialog-overlay").style.display = "flex";
+  const nextBtn = document.getElementById("dialog-next-button");
+  nextBtn.textContent = "다음으로";
+  nextBtn.onclick = () => {
+    closeDialog();
+    if (onNext) onNext();
+  };
+}
+function closeDialog() {
+  document.getElementById("dialog-overlay").style.display = "none";
+}
+</script>
+
+</body>
+</html>
