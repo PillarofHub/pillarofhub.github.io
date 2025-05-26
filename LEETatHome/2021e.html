@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>2024 LEET 홀수형 기출 집릿 OMR</title>
+  <title>2021 LEET 짝수형 기출 집릿 OMR</title>
   <style>
     body {
       font-family: sans-serif;
@@ -97,7 +97,7 @@
 
 <div id="lang" class="tab-content active">
   <div style="display: flex; align-items: center; gap: 10px;">
-    <h2 style="color:#307293; font-size: 1.4em;">2024 LEET 기출 언어이해(홀수형)</h2>
+    <h2 style="color:#307293; font-size: 1.4em;">2021 LEET 기출 언어이해(짝수형)</h2>
     <button id="show-answer-lang" onclick="showAnswer('lang')" data-showing="false" style="display:none;">정답 보기</button>
     <button class="start-button" onclick="startTimer('lang', 70 * 60)">시작</button>
     <button id="finish-lang" onclick="finishLang()" style="display:none;">종료</button>
@@ -123,7 +123,7 @@
 
 <div id="logic" class="tab-content">
   <div style="display: flex; align-items: center; gap: 10px;">
-    <h2 style="color:#307293; font-size: 1.4em;">2024 LEET 기출 추리논증(홀수형)</h2>
+    <h2 style="color:#307293; font-size: 1.4em;">2021 LEET 기출 추리논증(짝수형)</h2>
     <button id="show-answer-logic" onclick="showAnswer('logic')" data-showing="false" style="display:none;">정답 보기</button>
     <button class="start-button" onclick="startTimer('logic', 125 * 60)">시작</button>
     <button id="finish-logic" onclick="finishLogic()" style="display:none;">종료</button>
@@ -137,7 +137,7 @@
 </div>
 
 <div id="result" class="tab-content">
-  <h2 style="color:#307293;">2024 기출 집릿 성적표</h2>
+  <h2 style="color:#307293;">2021 기출 집릿 성적표</h2>
   <table border="1" cellpadding="8" id="score-table">
   <thead>
     <tr>
@@ -169,99 +169,100 @@
   </tbody>
 </table>
   *실제와 약간 다를 수 있습니다.<br/>
-  <div style="font-size: 0.5em">v2024o-250527</div>
+  <div style="font-size: 0.5em">v2021e-250527</div>
 </div>
 
 <script>
 
 const langAnswers = {
-  1:3,2:4,3:3,4:2,5:5,6:3,7:5,8:2,9:5,10:4,
-  11:1,12:3,13:1,14:4,15:3,16:3,17:2,18:1,19:5,20:4,
-  21:1,22:4,23:2,24:2,25:5,26:4,27:1,28:2,29:2,30:4
+  1:1,  2:4,  3:5,  4:5,  5:1,  6:3,  7:2,  8:1,  9:4, 10:1,
+ 11:2, 12:5, 13:3, 14:2, 15:4, 16:5, 17:5, 18:5, 19:2, 20:1,
+ 21:1, 22:3, 23:2, 24:2, 25:4, 26:5, 27:3, 28:2, 29:4, 30:3
 };
+
 const logicAnswers = {
-  1:4,2:3,3:2,4:3,5:3,6:3,7:5,8:3,9:4,10:4,
-  11:3,12:2,13:1,14:1,15:5,16:3,17:2,18:5,19:5,20:1,
-  21:2,22:2,23:1,24:1,25:4,26:4,27:2,28:3,29:5,30:1,
-  31:1,32:5,33:5,34:4,35:1,36:2,37:4,38:3,39:5,40:3
+  1:3,  2:2,  3:3,  4:3,  5:4,  6:5,  7:2,  8:4,  9:1, 10:1,
+ 11:4, 12:5, 13:3, 14:1, 15:4, 16:2, 17:3, 18:2, 19:2, 20:1,
+ 21:1, 22:3, 23:5, 24:2, 25:5, 26:1, 27:3, 28:4, 29:4, 30:3,
+ 31:2, 32:5, 33:5, 34:5, 35:3, 36:2, 37:2, 38:1, 39:1, 40:2
 };
 
 const langScoreMap = {
-  30: {std: '80.9', perc: '100.0'},
-  29: {std: '78.4', perc: '100.0'},
-  28: {std: '76.0', perc: '100.0'},
-  27: {std: '73.6', perc: '100.0'},
-  26: {std: '71.1', perc: '99.9'},
-  25: {std: '68.7', perc: '99.7'},
-  24: {std: '66.3', perc: '99.4'},
-  23: {std: '63.8', perc: '98.6'},
-  22: {std: '61.4', perc: '97.1'},
-  21: {std: '59.0', perc: '94.5'},
-  20: {std: '56.5', perc: '90.3'},
-  19: {std: '54.1', perc: '84.3'},
-  18: {std: '51.7', perc: '76.1'},
-  17: {std: '49.3', perc: '66.0'},
-  16: {std: '46.8', perc: '54.7'},
-  15: {std: '44.4', perc: '42.9'},
-  14: {std: '42.0', perc: '31.7'},
-  13: {std: '39.5', perc: '22.0'},
-  12: {std: '37.1', perc: '14.3'},
-  11: {std: '34.7', perc: '8.6'},
-  10: {std: '32.2', perc: '4.8'},
-   9: {std: '29.8', perc: '2.5'},
-   8: {std: '27.4', perc: '1.2'},
-   7: {std: '24.9', perc: '0.5'},
-   6: {std: '22.5', perc: '0.2'},
-   5: {std: '20.1', perc: '0.1'},
-   4: {std: '17.7', perc: '0.0'},
-   3: {std: '15.3', perc: '0.0'},
-   2: {std: '12.9', perc: '0.0'},
-   1: {std: '10.5', perc: '0.0'},
-   0: {std: '8.1', perc: '0.0'}
+  30: {std: '77.1', perc: '100.0'},
+  29: {std: '75.9', perc: '100.0'},
+  28: {std: '73.6', perc: '100.0'},
+  27: {std: '71.4', perc: '99.9'},
+  26: {std: '69.1', perc: '99.8'},
+  25: {std: '66.9', perc: '99.4'},
+  24: {std: '64.6', perc: '98.8'},
+  23: {std: '62.4', perc: '97.6'},
+  22: {std: '60.1', perc: '95.3'},
+  21: {std: '57.9', perc: '92.1'},
+  20: {std: '55.6', perc: '87.6'},
+  19: {std: '53.4', perc: '81.6'},
+  18: {std: '51.1', perc: '74.4'},
+  17: {std: '48.9', perc: '66.1'},
+  16: {std: '46.6', perc: '57.0'},
+  15: {std: '44.4', perc: '47.2'},
+  14: {std: '42.1', perc: '37.6'},
+  13: {std: '39.9', perc: '28.7'},
+  12: {std: '37.6', perc: '20.8'},
+  11: {std: '35.2', perc: '14.5'},
+  10: {std: '32.7', perc: '9.6'},
+  9: {std: '30.1', perc: '6.1'},
+  8: {std: '27.5', perc: '3.6'},
+  7: {std: '24.8', perc: '2.1'},
+  6: {std: '22.0', perc: '1.1'},
+  5: {std: '19.1', perc: '0.6'},
+  4: {std: '16.2', perc: '0.3'},
+  3: {std: '13.3', perc: '0.1'},
+  2: {std: '10.3', perc: '0.1'},
+  1: {std: '7.3', perc: '0.0'},
+  0: {std: '4.3', perc: '0.0'},
 };
 
 const logicScoreMap = {
-  40: {std: '97.5', perc: '100'},
-  39: {std: '95.4', perc: '100'},
-  38: {std: '93.3', perc: '99.9'},
-  37: {std: '91.2', perc: '99.9'},
-  36: {std: '89.1', perc: '99.8'},
-  35: {std: '86.9', perc: '99.3'},
-  34: {std: '84.8', perc: '99.1'},
-  33: {std: '82.7', perc: '98.3'},
-  32: {std: '80.6', perc: '96.9'},
-  31: {std: '78.5', perc: '94.9'},
-  30: {std: '76.4', perc: '92.5'},
-  29: {std: '74.3', perc: '88.7'},
-  28: {std: '72.2', perc: '84.9'},
-  27: {std: '70.1', perc: '79.6'},
-  26: {std: '68.0', perc: '73.3'},
-  25: {std: '65.9', perc: '66.6'},
-  24: {std: '63.8', perc: '58.7'},
-  23: {std: '61.7', perc: '50.7'},
-  22: {std: '59.6', perc: '42.7'},
-  21: {std: '57.5', perc: '34.9'},
-  20: {std: '55.4', perc: '27.8'},
-  19: {std: '53.3', perc: '21.4'},
-  18: {std: '51.2', perc: '16'},
-  17: {std: '49.1', perc: '11.6'},
-  16: {std: '46.9', perc: '8.1'},
-  15: {std: '44.8', perc: '5.4'},
-  14: {std: '42.8', perc: '3.5'},
-  13: {std: '40.9', perc: '2.2'},
-  12: {std: '39.1', perc: '1.4'},
-  11: {std: '37.5', perc: '0.8'},
-  10: {std: '36.0', perc: '0.4'},
-   9: {std: '34.6', perc: '0.2'},
-   8: {std: '33.4', perc: '0.1'},
-   7: {std: '32.3', perc: '0.1'},
-   6: {std: '31.3', perc: '0.0'},
-   5: {std: '30.6', perc: '0.0'},
-   4: {std: '30.0', perc: '0.0'},
-   3: {std: '29.6', perc: '0.0'},
-   2: {std: '29.4', perc: '0.0'},
-   1: {std: '29.3', perc: '0.0'},
-   0: {std: '29.2', perc: '0.0'}
+  40: {std: '96.5', perc: '100.0'},
+  39: {std: '94.5', perc: '100.0'},
+  38: {std: '92.5', perc: '99.9'},
+  37: {std: '90.5', perc: '99.7'},
+  36: {std: '88.5', perc: '99.4'},
+  35: {std: '86.4', perc: '98.9'},
+  34: {std: '84.4', perc: '98.2'},
+  33: {std: '82.4', perc: '97.2'},
+  32: {std: '80.4', perc: '95.6'},
+  31: {std: '78.4', perc: '93.5'},
+  30: {std: '76.4', perc: '90.9'},
+  29: {std: '74.4', perc: '87.6'},
+  28: {std: '72.4', perc: '83.7'},
+  27: {std: '70.4', perc: '79.4'},
+  26: {std: '68.3', perc: '74.5'},
+  25: {std: '66.3', perc: '69.0'},
+  24: {std: '64.3', perc: '63.2'},
+  23: {std: '62.3', perc: '57.4'},
+  22: {std: '60.3', perc: '51.2'},
+  21: {std: '58.3', perc: '44.9'},
+  20: {std: '56.3', perc: '38.5'},
+  19: {std: '54.3', perc: '32.1'},
+  18: {std: '52.3', perc: '26.6'},
+  17: {std: '50.3', perc: '21.5'},
+  16: {std: '48.3', perc: '17.1'},
+  15: {std: '46.3', perc: '13.3'},
+  14: {std: '44.3', perc: '10.1'},
+  13: {std: '42.3', perc: '7.5'},
+  12: {std: '40.3', perc: '5.5'},
+  11: {std: '38.3', perc: '3.9'},
+  10: {std: '36.3', perc: '2.7'},
+  9: {std: '34.3', perc: '1.8'},
+  8: {std: '32.3', perc: '1.2'},
+  7: {std: '30.3', perc: '0.8'},
+  6: {std: '28.3', perc: '0.5'},
+  5: {std: '26.3', perc: '0.3'},
+  4: {std: '24.3', perc: '0.2'},
+  3: {std: '22.3', perc: '0.1'},
+  2: {std: '20.3', perc: '0.1'},
+  1: {std: '18.3', perc: '0.0'},
+  0: {std: '16.3', perc: '0.0'},
 };
   
 const timerStates = {};

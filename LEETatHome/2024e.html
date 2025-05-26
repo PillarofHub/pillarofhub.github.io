@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>2024 LEET 홀수형 기출 집릿 OMR</title>
+  <title>2024 LEET 짝수형 기출 집릿 OMR</title>
   <style>
     body {
       font-family: sans-serif;
@@ -97,7 +97,7 @@
 
 <div id="lang" class="tab-content active">
   <div style="display: flex; align-items: center; gap: 10px;">
-    <h2 style="color:#307293; font-size: 1.4em;">2024 LEET 기출 언어이해(홀수형)</h2>
+    <h2 style="color:#307293; font-size: 1.4em;">2024 LEET 기출 언어이해(짝수형)</h2>
     <button id="show-answer-lang" onclick="showAnswer('lang')" data-showing="false" style="display:none;">정답 보기</button>
     <button class="start-button" onclick="startTimer('lang', 70 * 60)">시작</button>
     <button id="finish-lang" onclick="finishLang()" style="display:none;">종료</button>
@@ -123,7 +123,7 @@
 
 <div id="logic" class="tab-content">
   <div style="display: flex; align-items: center; gap: 10px;">
-    <h2 style="color:#307293; font-size: 1.4em;">2024 LEET 기출 추리논증(홀수형)</h2>
+    <h2 style="color:#307293; font-size: 1.4em;">2024 LEET 기출 추리논증(짝수형)</h2>
     <button id="show-answer-logic" onclick="showAnswer('logic')" data-showing="false" style="display:none;">정답 보기</button>
     <button class="start-button" onclick="startTimer('logic', 125 * 60)">시작</button>
     <button id="finish-logic" onclick="finishLogic()" style="display:none;">종료</button>
@@ -137,7 +137,7 @@
 </div>
 
 <div id="result" class="tab-content">
-  <h2 style="color:#307293;">2024 기출 집릿 성적표</h2>
+  <h2 style="color:#307293;">2024 기출 짝수형 집릿 성적표</h2>
   <table border="1" cellpadding="8" id="score-table">
   <thead>
     <tr>
@@ -169,21 +169,21 @@
   </tbody>
 </table>
   *실제와 약간 다를 수 있습니다.<br/>
-  <div style="font-size: 0.5em">v2024o-250527</div>
+  <div style="font-size: 0.5em">v2024e-250527</div>
 </div>
 
 <script>
 
 const langAnswers = {
-  1:3,2:4,3:3,4:2,5:5,6:3,7:5,8:2,9:5,10:4,
-  11:1,12:3,13:1,14:4,15:3,16:3,17:2,18:1,19:5,20:4,
-  21:1,22:4,23:2,24:2,25:5,26:4,27:1,28:2,29:2,30:4
+  1:3,2:4,3:3,4:2,5:5,6:3,7:1,8:2,9:5,10:4,
+  11:1,12:3,13:1,14:2,15:3,16:3,17:2,18:5,19:5,20:4,
+  21:1,22:4,23:2,24:2,25:5,26:4,27:1,28:4,29:2,30:4
 };
 const logicAnswers = {
-  1:4,2:3,3:2,4:3,5:3,6:3,7:5,8:3,9:4,10:4,
+  1:4,2:3,3:3,4:2,5:3,6:3,7:3,8:5,9:4,10:4,
   11:3,12:2,13:1,14:1,15:5,16:3,17:2,18:5,19:5,20:1,
-  21:2,22:2,23:1,24:1,25:4,26:4,27:2,28:3,29:5,30:1,
-  31:1,32:5,33:5,34:4,35:1,36:2,37:4,38:3,39:5,40:3
+  21:2,22:2,23:1,24:1,25:4,26:4,27:3,28:2,29:5,30:1,
+  31:5,32:1,33:5,34:4,35:1,36:2,37:4,38:3,39:5,40:3
 };
 
 const langScoreMap = {
