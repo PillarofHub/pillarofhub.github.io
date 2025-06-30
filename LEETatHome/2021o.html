@@ -269,6 +269,8 @@ const timerStates = {};
 const timerStartTimes = {};
 const timerIntervals = {};
 const timerButtons = {};
+const timerPausedDurations = {};
+
 const tabLocked = {};
 const tabActive = { lang: false, logic: false };
 
@@ -284,15 +286,23 @@ function startTimer(section, duration) {
     if (!timerStates[section]) {
       timerStates[section] = duration;
       timerStartTimes[section] = Date.now();
+      timerPausedDurations[section] = 0;
+    }
+
+    const pausedAt = timerPausedDurations[section + '_pausedAt'];
+    if (pausedAt) {
+      const pausedDuration = Math.floor((Date.now() - pausedAt) / 1000);
+      timerPausedDurations[section] += pausedDuration;
+      delete timerPausedDurations[section + '_pausedAt'];  // 중복 방지
     }
 
     timerIntervals[section] = setInterval(() => {
-      const elapsed = Math.floor((Date.now() - timerStartTimes[section]) / 1000);  // 실제 경과 시간
+      const elapsed = Math.floor((Date.now() - timerStartTimes[section]) / 1000) - (timerPausedDurations[section] || 0);  // 실제 경과 시간
       const remaining = Math.max(0, timerStates[section] - elapsed);
       const minutes = String(Math.floor(remaining / 60)).padStart(2, '0');
       const seconds = String(remaining % 60).padStart(2, '0');
       display.textContent = `${minutes}:${seconds}`;
-
+      
       if (remaining <= 0) {
         clearInterval(timerIntervals[section]);
         tabLocked[section] = true;
@@ -301,7 +311,7 @@ function startTimer(section, duration) {
         else if (section === 'break') finishBreak()
         else if (section === 'logic') finishLogic()      
       }
-    }, 1000);
+    }, 950);
     startButton.textContent = '일시정지';
     if (section === 'lang' || section === 'logic') {
       tabActive[section] = true;
@@ -311,6 +321,7 @@ function startTimer(section, duration) {
   } else {
     clearInterval(timerIntervals[section]);
     timerIntervals[section] = null;
+    timerPausedDurations[section + '_pausedAt'] = Date.now();  // 일시정지 시각 저장
     startButton.textContent = '시작';
   }
 }
